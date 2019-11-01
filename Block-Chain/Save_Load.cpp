@@ -2,7 +2,7 @@
 #include "storage.h"
 #include "Block.h"
 
-void saveData(user* users, transaction* txPool, uint16_t userNR, uint16_t txNR) {
+void saveData(std::vector<user> &users, std::vector<transaction> &txPool, uint16_t userNR, uint16_t txNR) {
 	std::ofstream fu;
 	std::ofstream ftx;
 	fu.open("Users.txt", std::ios::out);
@@ -19,7 +19,7 @@ void saveData(user* users, transaction* txPool, uint16_t userNR, uint16_t txNR) 
 	ftx.close();
 }
 
-void loadData(user* users, transaction* txPool, uint16_t userNR, uint16_t txNR) {
+void loadData(std::vector<user> &users, std::vector<transaction> &txPool, uint16_t userNR, uint16_t txNR) {
 	std::ifstream fu;
 	std::ifstream ftx;
 	fu.open("Users.txt", std::ios::app);

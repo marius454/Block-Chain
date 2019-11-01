@@ -3,19 +3,24 @@
 #include "Block.h"
 #include <random>
 
-Block_Chain initializeChain(transaction* txPool, uint16_t txNR) {
+Block_Chain initializeChain(std::vector<transaction> txPool, uint16_t txNR) {
 	short cnt = 0;
-	transaction* blockTx = new transaction[100];
-	for (uint16_t i = 0; i < 100; i++) {
-		blockTx[i] = txPool[i];
+	std::vector<transaction> blockTx(txPool.begin(), txPool.begin() + 100);
+	for (uint16_t i = 0; i < blockTx.size(); i++) {
 		blockTx[i].setHeight(cnt);
 	}
 	cnt++;
 	Block_Chain Chain(blockTx);
-	while (cnt * 100 < txNR) {
-		transaction* blockTx = new transaction[100];
-		for (uint16_t i = 0; i < 100; i++) {
-			blockTx[i] = txPool[i + cnt*100];
+
+	while (cnt <= txNR / 100) {
+		if (txNR - cnt * 100 >= 100) {
+			blockTx = std::vector<transaction> (txPool.begin() + (cnt * 100), txPool.begin() + (cnt * 100) + 100);
+		}
+		else {
+			blockTx = std::vector<transaction>(txPool.begin() + (cnt * 100), txPool.end());
+		}
+
+		for (uint16_t i = 0; i < blockTx.size(); i++) {
 			blockTx[i].setHeight(cnt);
 		}
 		cnt++;
@@ -52,7 +57,7 @@ Block getBlockByIndex(Block_Chain Chain, uint16_t txNR) {
 	std::cout << "Input block index:" << std::endl;
 selection:
 	std::cin >> index;
-	if ((index + 1) * 100 > txNR) {
+	if (index + 1 > Chain.size()) {
 		std::cout << "No such block, try again:" << std::endl;
 		goto selection;
 	}
@@ -76,14 +81,14 @@ selection:
 		Block block;
 		return block;
 	}
-	for (short i = 0; i < txNR / 100; i++) {
+	for (short i = 0; i < Chain.size(); i++) {
 		Block block = Chain.getBlock(i);
 		if (block.getHash() == hash) {
 			index = i;
 			break;
 		}
 	}
-	if ((index + 1) * 100 > txNR) {
+	if (index + 1 > Chain.size()) {
 		std::cout << "No such block, try again:" << std::endl;
 		goto selection;
 	}

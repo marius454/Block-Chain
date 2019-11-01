@@ -65,8 +65,20 @@ public:
 		nameFrom = nameFrom_;
 		nameTo = nameTo_;
 		amount = amount_;
+		time = std::time(nullptr);
+		bHeight = 0;
 		std::string txInfo = hashFrom + hashTo + nameFrom + nameTo + std::to_string(amount);
 		hashTx(txInfo);
+	}
+	std::string recalculateHash() {
+		std::string txInfo = hashFrom + hashTo + nameFrom + nameTo + std::to_string(amount);
+		return Hash(txInfo);
+	}
+	std::string getSenderHash() {
+		return hashFrom;
+	}
+	uint32_t getAmount() {
+		return amount;
 	}
 	std::string getHash() {
 		return txHash;
