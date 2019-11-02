@@ -1,7 +1,7 @@
 #pragma once
-
-
 #include "stdafx.h"
+
+std::string manoHash(std::string input);
 
 class user
 {
@@ -55,7 +55,7 @@ private:
 	uint32_t amount;
 
 	void hashTx(std::string info) {
-		txHash = Hash(info);
+		txHash = manoHash(info);
 	}
 public:
 	transaction() {};
@@ -72,7 +72,7 @@ public:
 	}
 	std::string recalculateHash() {
 		std::string txInfo = hashFrom + hashTo + nameFrom + nameTo + std::to_string(amount);
-		return Hash(txInfo);
+		return manoHash(txInfo);
 	}
 	std::string getSenderHash() {
 		return hashFrom;

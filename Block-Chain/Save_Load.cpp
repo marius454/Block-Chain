@@ -22,8 +22,8 @@ void saveData(std::vector<user> &users, std::vector<transaction> &txPool, uint16
 void loadData(std::vector<user> &users, std::vector<transaction> &txPool, uint16_t userNR, uint16_t txNR) {
 	std::ifstream fu;
 	std::ifstream ftx;
-	fu.open("Users.txt", std::ios::app);
-	ftx.open("Tx Pool.txt", std::ios::app);
+	fu.open("Users.txt");
+	ftx.open("Tx Pool.txt");
 	for (uint16_t i = 0; i < userNR; i++) {
 		std::string name, pbKey, balance;
 		fu >> name;
@@ -45,3 +45,5 @@ void loadData(std::vector<user> &users, std::vector<transaction> &txPool, uint16
 	fu.close();
 	ftx.close();
 }
+
+

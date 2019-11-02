@@ -2,7 +2,7 @@
 
 #include "stdafx.h"
 #include "storage.h"
-
+std::string manoHash(std::string input);
 
 //Sukuriama bloko klase
 class Block {
@@ -13,29 +13,32 @@ private:
 	int64_t nonce;
 	time_t time;
 	std::string BlockInfo;
+	uint32_t iterations;
 
 	std::string calculateHash() {
 		std::string blockInfo = BlockInfo + std::to_string(nonce);
-		return Hash(blockInfo);
+		return manoHash(blockInfo);
 	};
 public:
 	std::string prevHash;
 	Block() {};
-	Block(uint16_t index_, std::vector<transaction> data_, uint8_t difficulty) {
+	Block(uint16_t index_, std::vector<transaction> data_, uint8_t difficulty, uint32_t Iterations) {
 		index = index_;
 		nonce = -1;
 		data = data_;
 		time = std::time(nullptr);
 		std::stringstream blockInfo;
 		std::string sdata = "";
-		for (short i = 0; i < data_.size(); i++) {
+		for (uint8_t i = 0; i < data_.size(); i++) {
 			sdata = sdata + data[i].getHash();
 		}
-		blockInfo << index << sdata << time <<  prevHash;
+		blockInfo << index << sdata << time << prevHash;
 		BlockInfo = blockInfo.str();
+		iterations = Iterations;
 		mineBlock(difficulty);
-		std::cout << nonce << std::endl;
+		std::cout << "iterations: " << nonce << std::endl;
 	};
+	
 	std::string getHash() {
 		return hash;
 	};
@@ -52,17 +55,33 @@ public:
 		}
 		cstr[difficulty] = '\0';
 		std::string str(cstr);
+		std::string Hash;
+		auto t1 = std::chrono::high_resolution_clock::now();
 		do {
 			nonce++;
-			hash = calculateHash();
-		} while (hash.substr(0, difficulty) != str);
+			Hash = calculateHash();
+		} while (Hash.substr(0, difficulty) != str && nonce < iterations);
+		auto t2 = std::chrono::high_resolution_clock::now();
+		long long duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+		double dur = (double)duration * 0.000001;
+		std::cout << "mining time: " << dur << "s" << std::endl;
+
+		if (Hash.substr(0, difficulty) == str) {
+			blockMined(Hash);
+		}
+		else {
+			hash = "";
+		}
 	};
+	void blockMined(std::string Hash) {
+		hash = Hash;
+	}
 	void print1() {
 		std::cout << "Block " << index << ":" << std::endl;
 		std::cout << "Previous Hash - \"" << prevHash << "\"" << std::endl;
 		std::cout << "Hash - \"" << hash << "\"" << std::endl;
 		std::cout << "Transactions:" << std::endl;
-		for (short i = 0; i < data.size(); i++) {
+		for (uint8_t i = 0; i < data.size(); i++) {
 			std::cout << "\"" << data[i].getHash() << "\"" << std::endl;
 		}
 	}
@@ -72,13 +91,15 @@ public:
 	}
 };
 
+//Sukuriama bloku grandines klase
 class Block_Chain {
 private:
 	uint8_t difficulty;
 	std::vector<Block> chain;
-	uint16_t Size;
+	size_t Size;
+	uint32_t iterations;
 public:
-	uint16_t size() {
+	size_t size() {
 		return Size;
 	}
 	Block getLastBlock() const {
@@ -87,15 +108,24 @@ public:
 	Block getBlock(short i) const {
 		return chain[i];
 	}
-	Block_Chain(std::vector<transaction> data) {
-		difficulty = 1;
-		chain.emplace_back(Block(0, data, difficulty));
+	void incrementIter() {
+		iterations = iterations + 200;
+	}
+	Block_Chain() {
+		difficulty = 2;
+		Size = 0;
+		iterations = 200;
 	};
 	void addBlock(std::vector<transaction> &data) {
-		Block bNew(getLastBlock().getIndex() + 1, data, difficulty);
-		bNew.prevHash = getLastBlock().getHash();
-		chain.push_back(bNew);
-		Size = chain.size();
+		Block bNew(Size, data, difficulty, iterations);
+		if (bNew.getHash() != "") {
+			if (Size > 0) {
+				bNew.prevHash = getLastBlock().getHash();
+			}
+			chain.push_back(bNew);
+			Size = chain.size();
+			iterations = 200;
+		}
 	};
 };
 
