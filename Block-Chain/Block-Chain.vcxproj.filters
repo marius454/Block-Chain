@@ -47,10 +47,10 @@
     <ClCompile Include="Verification.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sha256.cpp">
+    <ClCompile Include="manoHash.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="manoHash.cpp">
+    <ClCompile Include="create_merkle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

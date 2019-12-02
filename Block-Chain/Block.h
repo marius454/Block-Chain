@@ -12,31 +12,30 @@ private:
 	std::string hash;
 	int64_t nonce;
 	time_t time;
+	std::string merkle_root;
 	std::string BlockInfo;
-	uint32_t iterations;
+	uint32_t maxiter;
 
 	std::string calculateHash() {
 		std::string blockInfo = BlockInfo + std::to_string(nonce);
 		return manoHash(blockInfo);
 	};
+	std::string create_merkle(std::vector<transaction>& data);
 public:
 	std::string prevHash;
 	Block() {};
-	Block(uint16_t index_, std::vector<transaction> data_, uint8_t difficulty, uint32_t Iterations) {
+	Block(uint16_t index_, std::vector<transaction> data_, uint8_t difficulty, uint32_t maxIter) {
 		index = index_;
 		nonce = -1;
 		data = data_;
 		time = std::time(nullptr);
 		std::stringstream blockInfo;
-		std::string sdata = "";
-		for (uint8_t i = 0; i < data_.size(); i++) {
-			sdata = sdata + data[i].getHash();
-		}
-		blockInfo << index << sdata << time << prevHash;
+		merkle_root = create_merkle(data);
+		blockInfo << index << merkle_root << time << prevHash;
 		BlockInfo = blockInfo.str();
-		iterations = Iterations;
+		maxiter = maxIter;
 		mineBlock(difficulty);
-		std::cout << "iterations: " << nonce << std::endl;
+		std::cout << "iterations: " << nonce + 2 << std::endl;
 	};
 	
 	std::string getHash() {
@@ -58,9 +57,10 @@ public:
 		std::string Hash;
 		auto t1 = std::chrono::high_resolution_clock::now();
 		do {
-			nonce++;
 			Hash = calculateHash();
-		} while (Hash.substr(0, difficulty) != str && nonce < iterations);
+			nonce++;
+		} while (Hash.substr(0, difficulty) != str && nonce < maxiter - 1);
+		nonce--;
 		auto t2 = std::chrono::high_resolution_clock::now();
 		long long duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
 		double dur = (double)duration * 0.000001;
@@ -97,7 +97,7 @@ private:
 	uint8_t difficulty;
 	std::vector<Block> chain;
 	size_t Size;
-	uint32_t iterations;
+	uint32_t maxiter;
 public:
 	size_t size() {
 		return Size;
@@ -109,22 +109,22 @@ public:
 		return chain[i];
 	}
 	void incrementIter() {
-		iterations = iterations + 200;
+		maxiter = maxiter + 1000;
 	}
 	Block_Chain() {
-		difficulty = 2;
+		difficulty = 3;
 		Size = 0;
-		iterations = 200;
+		maxiter = 1000;
 	};
 	void addBlock(std::vector<transaction> &data) {
-		Block bNew(Size, data, difficulty, iterations);
+		Block bNew(Size, data, difficulty, maxiter);
 		if (bNew.getHash() != "") {
 			if (Size > 0) {
 				bNew.prevHash = getLastBlock().getHash();
 			}
 			chain.push_back(bNew);
 			Size = chain.size();
-			iterations = 200;
+			maxiter = 1000;
 		}
 	};
 };

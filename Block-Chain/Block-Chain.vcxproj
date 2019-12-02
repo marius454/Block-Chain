@@ -156,9 +156,9 @@
   <ItemGroup>
     <ClCompile Include="Block-Chain.cpp" />
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="create_merkle.cpp" />
     <ClCompile Include="manoHash.cpp" />
     <ClCompile Include="Save_Load.cpp" />
-    <ClCompile Include="sha256.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

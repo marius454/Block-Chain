@@ -19,14 +19,15 @@ std::string manoHash(std::string input)
 
 	unsigned long long hash[4]{ 0x4F2C01A9, 0x586176D4, 0x9A097473, 0x51B4A584 };
 	char *ch = new char[input.size() + 1];
-
+	unsigned int seed;
+	unsigned int rem;
 	strcpy_s(ch, input.size() + 1, input.c_str());
-	for (unsigned long i = 0; i <= input.size() - 1; i++) {
-		int seed = (int)ch[i];
+	size_t size = input.size();
+	for (unsigned long i = 0; i <= size - 1; i++) {
+		seed = (int)ch[i];
 		for (unsigned short j = 0; j < n; j++) {
 			hash[j] = hash[j] * (int)round(pow(seed + 1, constants[j]));
 		}
-		int rem;
 		unsigned long long reverse[4]{ 0x0, 0x0, 0x0, 0x0 };
 		for (unsigned short j = 0; j < n; j++) {
 			hash[j] = hash[j] / std::pow(16, numDigits(hash[j]) - 8);
