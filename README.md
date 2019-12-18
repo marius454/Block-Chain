@@ -99,9 +99,10 @@ void verification(std::vector<transaction> &txPool, std::vector<user> &users) {
 }
 ```
 
-Taip pat vietoj vieno bloko pridėjimo po kito iš eilės, kuriami 5 blokai kandidatai iš kurių vienas gali tapti sekančiu blokų grandinės nariu. Kandidatai yra kasami iki 1000 iteracijų/bandymų jei nėra randamas hash'as atitinkantis sudėtingumo (difficulty) reikalavimus einama prie sekančio atsitiktinai paimto bloko ir bandoma iškastį jį. Jei nei vienas iš kandidatų nebuvo iškastas per 1000 iteracijų iteracijų limitas yra padidinamas pridedant dar 1000 iteracijų taip daroma kol bus gautas vienas sėkmingas kandidatas.
+Taip pat vietoj vieno bloko pridėjimo po kito iš eilės, kuriami 5 blokai kandidatai iš kurių vienas gali tapti sekančiu blokų grandinės nariu. Kandidatai yra kasami iki 1000 iteracijų/bandymų jei nėra randamas hash'as atitinkantis sudėtingumo (difficulty) reikalavimus einama prie sekančio atsitiktinai paimto bloko kandidato ir bandoma iškastį jį. Jei nei vienas iš kandidatų nebuvo iškastas per 1000 iteracijų, iteracijų limitas yra padidinamas pridedant dar 1000 iteracijų taip daroma kol bus gautas vienas sėkmingas kandidatas.
 
---------- pridėti išvesties kai prieisiu prie laptop --------------------
+![](Images/BChain_image.png)
+
 
 ## v0.3
 
@@ -149,4 +150,19 @@ std::string Block::create_merkle(std::vector<transaction>& data) {
 }
 ```
 
-Taip iš daug transakcijų hash'u gaunamas vienas unikalus hash'as kuris užtikrina kad bloko kasimas visada turės ta patį sudėtinguma nepriklausomai nuo to kiek transakcijų yra bloke.
+Taip iš daug transakcijų hash'u gaunamas vienas unikalus hash'as kuris užtikrina kad bloko kasimas visada turės ta patį sudėtingumą nepriklausomai nuo to kiek transakcijų yra bloke.
+
+## Bendri komentarai
+
+Paleidus programą matomas šis menu:
+
+![](Images/BChain_menu1.png)
+
+Pasirinkus "Saved data" blokų grandinės inicializavimui bus paimti duomenys kurie buvo generuojami paskutinį kartą.
+Pasirinkus "Generate new data" bus generuojami nauji duomenys ir išsaugomi vietoje praeitų.
+
+Inicializavus blokų grandinę matomas kitas menu:
+
+![](Images/BChain_menu2.png)
+
+Šiame menu galime pasirinkti kokią informaciją norime pamatyti ir, bloko atveju, pasirinkti kaip jo ieškoti.
