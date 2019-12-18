@@ -31,7 +31,8 @@ public:
 		time = std::time(nullptr);
 		std::stringstream blockInfo;
 		merkle_root = create_merkle(data);
-		blockInfo << index << merkle_root << time << prevHash;
+		//blockInfo << index << merkle_root << time << prevHash;
+		blockInfo << index << merkle_root << prevHash;
 		BlockInfo = blockInfo.str();
 		maxiter = maxIter;
 		mineBlock(difficulty);
@@ -98,6 +99,7 @@ private:
 	std::vector<Block> chain;
 	size_t Size;
 	uint32_t maxiter;
+	time_t candidateTimeStamp;
 public:
 	size_t size() {
 		return Size;
